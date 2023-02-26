@@ -51,7 +51,7 @@ public class Enemy : MonoBehaviour, Entity
         speedScale = 2;
         accuracy = 0.5f;
 
-        exp = 100;
+        exp = 50;
 
         skills = new List<Skill>
         {
@@ -77,7 +77,7 @@ public class Enemy : MonoBehaviour, Entity
         this.speedScale = speedScale;
         this.accuracy = accuracy;
 
-        exp = 100;
+        exp = 50;
 
         skills = new List<Skill>
         {

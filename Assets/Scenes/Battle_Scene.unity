@@ -159,7 +159,6 @@ MonoBehaviour:
   mainCamera: {fileID: 748809166}
   mainCanvas: {fileID: 529584589}
   dialogue: {fileID: 1516836856}
-  numberOfCharacters: 3
   state: 0
 --- !u!4 &154093010
 Transform:

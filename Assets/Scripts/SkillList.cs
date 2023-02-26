@@ -15,7 +15,7 @@ public class SkillList : MonoBehaviour
 
     private readonly float buttonX = 4.5f;
     private readonly float buttonY = 1f;
-    private readonly float buttonSpacing = 1f;
+    private readonly float buttonSpacing = 3f;
 
     void Start()
     {

@@ -118,7 +118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4711332750450119708
 RectTransform:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a209897ea0f440d45b7ac5c44edf3787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayer: {fileID: 4372172040871804794}
+  currentPlayer: {fileID: 3173372528101865198}
   skillButtonPrefab: {fileID: 2897331348058121370, guid: f06fe549639157f49a9149013317a657, type: 3}
   skillList: {fileID: 2504643644546969218}
 --- !u!1 &2896850913633474331
@@ -703,7 +703,7 @@ GameObject:
   - component: {fileID: 6581866530488015152}
   - component: {fileID: 765954524274156585}
   m_Layer: 0
-  m_Name: Vergil
+  m_Name: PlayerImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1054,7 +1054,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6410169547334661053}
-  - component: {fileID: 4372172040871804794}
+  - component: {fileID: 3173372528101865198}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1079,7 +1079,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4372172040871804794
+--- !u!114 &3173372528101865198
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1092,6 +1092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuGO: {fileID: 8801142594343778798}
+  playerImage: {fileID: 5066008172929020419}
   maxMana: 10
   currentMana: 10
   levelUpExp: 100
@@ -1112,7 +1113,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2027659261873061261
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1148,7 +1149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a12582c70f707a49ba055e4ac61e51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayer: {fileID: 4372172040871804794}
+  currentPlayer: {fileID: 0}
   attackButton: {fileID: 6897928077566477005}
   skillListButton: {fileID: 6792648289097562717}
   runButton: {fileID: 4325652038374739010}

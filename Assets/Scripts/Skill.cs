@@ -15,6 +15,13 @@ public class Skill
         skillDamage = 40;
     }
 
+    public Skill(string skillName, int skillCost, int skillDamage)
+    {
+        this.skillName = skillName;
+        this.skillCost = skillCost;
+        this.skillDamage = skillDamage;
+    }
+
     public void ActivateSpell()
     {
         

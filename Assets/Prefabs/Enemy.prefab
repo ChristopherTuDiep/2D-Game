@@ -475,6 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hudPrefab: {fileID: 8853063648973379162}
   enemyHUD: {fileID: 1383023353057554899}
+  exp: 50
   currentGameObject: {fileID: 8605165880625305023}
 --- !u!1 &8853063648973379162
 GameObject:

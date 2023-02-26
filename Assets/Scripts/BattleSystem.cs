@@ -9,6 +9,8 @@ using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using System.IO;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, ESCAPED, WON, LOST }
 
@@ -26,7 +28,6 @@ public class BattleSystem : MonoBehaviour
     public TMP_Text dialogue;
 
 
-    public int numberOfCharacters;
     private Player[] characterOrder; //Order of characters from top to bottom
     private Enemy[] enemyOrder; //Order of enemies from top to bottom
     private CharacterHUD[] characterHUDs; //HUDs for the player characters
@@ -58,7 +59,6 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.START;
         turnIncrement = 0;
         turnOrder = new List<Entity>();
-
         StartCoroutine(SetupBattle());
     }
 
@@ -72,29 +72,40 @@ public class BattleSystem : MonoBehaviour
         enemySelectionArrow.SetActive(false);
 
         //Instantiates characters, their huds, and the order
+        int numberOfCharacters = GameBrain.Instance.PlayerCount();
         characterOrder = new Player[numberOfCharacters];
         characterHUDs= new CharacterHUD[numberOfCharacters];
 
         for (int i = 0; i < numberOfCharacters; i++)
         {
-            GameObject playerGO = SpawnEntities(playerPrefab, i);
+            GameObject playerGO = Instantiate(playerPrefab);
+
+            playerGO.transform.position = EntityPosition(playerGO, i);
 
             Player playerEntity = playerGO.GetComponent<Player>();
-            playerEntity.TurnEnded();
+
+            GameBrain.Instance.SetStats(playerEntity, i);
+
+            playerEntity.InCombat();
             characterOrder[i] = playerEntity;
 
             hudPos = Vector2.zero;
             hudPos.y = hudY - (hudSpacing * i);
             hudPos.x = hudX;
+
+            //Setting up the character HUD
             GameObject characterHUDGO = Instantiate(characterHUDPrefab, hudPos, Quaternion.identity);
             characterHUDGO.transform.SetParent(mainCanvas.transform, false);
 
 
             CharacterHUD characterHUD = characterHUDGO.GetComponent<CharacterHUD>();
 
-            characterHUD.SetMaxHealth(playerEntity.maxHealth);
             characterHUD.SetName(playerEntity.entityName);
+
+            characterHUD.SetMaxHealth(playerEntity.maxHealth);
+            characterHUD.SetHealth(playerEntity.currentHealth);
             characterHUD.SetMaxMana(playerEntity.maxMana);
+            characterHUD.SetMana(playerEntity.currentMana);
             characterHUD.SetMaxExp(playerEntity.levelUpExp);
             characterHUD.SetExp(playerEntity.currentExp);
 
@@ -103,11 +114,14 @@ public class BattleSystem : MonoBehaviour
         }
 
         //Instantiates enemy and order
-        int enemyNumber = random.Next(1, 4);
+        //int enemyNumber = random.Next(1, 4);
+        int enemyNumber = 1;
         enemyOrder = new Enemy[enemyNumber];
         for (int i = 0; i < enemyNumber; i++)
         {
-            GameObject enemyGO = SpawnEntities(enemyPrefab, i);
+            GameObject enemyGO = Instantiate(enemyPrefab);
+
+            enemyGO.transform.position = EntityPosition(enemyGO, i);
             
             enemyOrder[i] = enemyGO.GetComponent<Enemy>();
             Entity enemyEntity = enemyGO.GetComponent<Entity>();
@@ -340,11 +354,14 @@ public class BattleSystem : MonoBehaviour
             for(int i = 0; i < enemyOrder.Length; i++)
             {
                 totalExp += enemyOrder[i].ExpWorth();
+                print(enemyOrder[i].ExpWorth());
             }
 
             for(int i = 0; i < characterOrder.Length; i++)
             {
-                characterOrder[i].GainExp(Mathf.RoundToInt(totalExp / numberOfCharacters));
+                // characterOrder[i].GainExp(Mathf.RoundToInt(totalExp / GameBrain.Instance.PlayerCount()));
+                print(totalExp);
+                characterOrder[i].GainExp(totalExp);
                 characterHUDs[i].SetExp(characterOrder[i].currentExp);
             }
         }
@@ -356,6 +373,10 @@ public class BattleSystem : MonoBehaviour
         {
             dialogue.text = "You have escaped!";
         }
+
+        GameBrain.Instance.UpdateStats(characterOrder);
+
+        SceneManager.LoadScene("Battle_Scene");
     }
 
     bool IsAllDead(Entity[] entities)
@@ -370,9 +391,8 @@ public class BattleSystem : MonoBehaviour
         return true;
     }
 
-    GameObject SpawnEntities(GameObject currentEntity, int currentIncrement)
+    Vector2 EntityPosition(GameObject currentEntity, int currentIncrement)
     {
-        GameObject entityGO = Instantiate(currentEntity);
         Vector2 pos = Vector2.zero;
         pos.y = entityY - (entityYSpacing * currentIncrement);
         if(currentEntity.GetComponent<Entity>().isPlayerEntity)
@@ -388,9 +408,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
        
-        entityGO.transform.position = pos;
-
-        return entityGO;
+        return pos;
     }
 
     public void MoveArrow(int targetLocation)

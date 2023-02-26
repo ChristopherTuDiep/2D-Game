@@ -25,7 +25,6 @@ public static class BattleHandler
         float basePower = attacker.WeaponDamage();
         float damageCalculator = basePower / Mathf.Sqrt(target.endurance * 8);
         target.TakeDamage(Mathf.RoundToInt(damageCalculator));
-        float damage = Player.Instance.WeaponDamage();
     }
 
     //basic skill effect

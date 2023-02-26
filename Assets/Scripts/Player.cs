@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Warrior : Singleton<Warrior>, Player
-
-public class Player : Singleton<Player>, Entity
+public class Player : MonoBehaviour, Entity
 {
     public GameObject menuGO;
+    public GameObject playerImage;
+
     public string entityName { get; set; }
     public int entityLevel { get; set; }
     public bool isPlayerEntity { get; set; }
@@ -63,10 +63,14 @@ public class Player : Singleton<Player>, Entity
 
         skills = new List<Skill>
         {
-            new Skill()
+            new Skill(),
+            new Skill("Agi", 4, 80)
         };
 
         UpdateStats();
+
+        currentHealth = maxHealth;
+        currentMana = maxMana;
     }
 
     public Player(string entityName, int entityLevel, int healthScale, int damageScale, int magicScale, int defenseScale, int speedScale, int manaScale)
@@ -83,17 +87,77 @@ public class Player : Singleton<Player>, Entity
         this.magicScale = magicScale;
         this.defenseScale = defenseScale;
         this.speedScale = speedScale;
-        this.manaScale= manaScale;
+        this.manaScale = manaScale;
 
         currentExp = 0;
         levelUpExp = 100;
 
         skills = new List<Skill>
         {
-            new Skill()
+            new Skill(),
+            new Skill("Agi", 4, 80)
         };
 
         UpdateStats();
+
+        currentHealth = maxHealth;
+        currentMana = maxMana;
+    }
+
+    public void SetPlayerStats(Player playerData)
+    {
+        entityName = playerData.entityName;
+        entityLevel = playerData.entityLevel;
+
+        currentHealth = playerData.currentHealth;
+        currentMana = playerData.currentMana;
+
+        healthScale = playerData.healthScale;
+        damageScale = playerData.damageScale;
+        magicScale = playerData.magicScale;
+        defenseScale = playerData.defenseScale;
+        speedScale = playerData.speedScale;
+        manaScale = playerData.manaScale;
+
+        currentExp = playerData.currentExp;
+        levelUpExp = playerData.levelUpExp;
+
+        skills = playerData.skills;
+
+        UpdateStats();
+    }
+
+    public void SetPlayerStats(string entityName, int entityLevel, int currentHealth, int currentMana, int healthScale, int damageScale, int magicScale, int defenseScale, int speedScale, int manaScale)
+    {
+        this.entityName = entityName;
+        this.entityLevel = entityLevel;
+
+        this.currentHealth = currentHealth;
+        this.currentMana = currentMana;
+
+        this.healthScale = healthScale;
+        this.damageScale = damageScale;
+        this.magicScale = magicScale;
+        this.defenseScale = defenseScale;
+        this.speedScale = speedScale;
+        this.manaScale= manaScale;
+
+        currentExp = 0;
+        levelUpExp = 100;
+
+        UpdateStats();
+    }
+
+    public void OutOfCombat()
+    {
+        menuGO.GetComponent<MenuUI>().DisableSkillList();
+        menuGO.SetActive(false);
+        playerImage.SetActive(false);
+    }
+
+    public void InCombat()
+    {
+        playerImage.SetActive(true);
     }
 
     public void IsCurrentTurn()
@@ -133,7 +197,6 @@ public class Player : Singleton<Player>, Entity
     private void UpdateStats()
     {
         maxHealth = healthScale * entityLevel;
-        currentHealth = maxHealth;
 
         strength = damageScale * entityLevel;
         endurance = defenseScale * entityLevel;
@@ -141,7 +204,6 @@ public class Player : Singleton<Player>, Entity
         agility = speedScale * entityLevel;
 
         maxMana = manaScale * entityLevel;
-        currentMana = maxMana;
     }
 
     public void TakeDamage(int damage)
