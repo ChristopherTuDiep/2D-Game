@@ -23,7 +23,7 @@ public static class BattleHandler
     public static void Attack()
     {
         float basePower = attacker.WeaponDamage();
-        float damageCalculator = basePower / Mathf.Sqrt(target.endurance * 8);
+        float damageCalculator = basePower / Mathf.Sqrt(target.GetEndurance() * 8);
         target.TakeDamage(Mathf.RoundToInt(damageCalculator));
     }
 
@@ -33,11 +33,21 @@ public static class BattleHandler
         Skill attack = attacker.UseSkill(skill);
         if(attack != null)
         {
-            float basePower = Mathf.Sqrt(attack.skillDamage) * Mathf.Sqrt(attacker.magic);
-            float damageCalculator = basePower / Mathf.Sqrt(target.endurance * 8);
+            float basePower = Mathf.Sqrt(attack.skillDamage) * Mathf.Sqrt(attacker.GetMagic());
+            float damageCalculator = basePower / Mathf.Sqrt(target.GetEndurance() * 8);
 
             target.TakeDamage(Mathf.RoundToInt(damageCalculator));
         }
+    }
+
+    public static void Heal(int health)
+    {
+        target.RestoreHealth(health);
+    }
+
+    public static void RestoreMana(int restore)
+    {
+
     }
 
     public static void TryToEscape(float random)
@@ -68,7 +78,7 @@ public static class BattleHandler
 
     public static bool IsTargetDead()
     {
-        return target.isDead;
+        return target.IsDead;
     }
 
     public static void SetDialogue(string dialogue)

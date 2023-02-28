@@ -22,7 +22,7 @@ public class SkillList : MonoBehaviour
         buttonList = new List<Button>();
         Vector2 buttonPos;
 
-        for (int i = 0; i < currentPlayer.skills.Count; i++)
+        for (int i = 0; i < currentPlayer.GetSkills().Count; i++)
         {
             buttonPos = Vector2.zero;
             buttonPos.y = buttonY - (buttonSpacing * i);
@@ -30,8 +30,8 @@ public class SkillList : MonoBehaviour
 
             GameObject skillButton = Instantiate(skillButtonPrefab, buttonPos, Quaternion.identity);
             skillButton.transform.SetParent(skillList.transform, false);
-            skillButton.GetComponent<SkillButtonScript>().skillName.text = currentPlayer.skills[i].skillName;
-            skillButton.GetComponent<SkillButtonScript>().skillCost.text = currentPlayer.skills[i].skillCost.ToString() + " MP";
+            skillButton.GetComponent<SkillButtonScript>().skillName.text = currentPlayer.GetSkills()[i].skillName;
+            skillButton.GetComponent<SkillButtonScript>().skillCost.text = currentPlayer.GetSkills()[i].skillCost.ToString() + " MP";
 
             buttonList.Add(skillButton.GetComponent<Button>());
         }
@@ -44,7 +44,7 @@ public class SkillList : MonoBehaviour
     {
         for(int i = 0; i < buttonList.Count; i++)
         {
-            bool canUse = currentPlayer.CanUseSkill(currentPlayer.skills[i].skillName);
+            bool canUse = currentPlayer.CanUseSkill(currentPlayer.GetSkills()[i].skillName);
             buttonList[i].interactable = canUse;
         }
     }

@@ -9,7 +9,6 @@ public class GameBrain : Singleton<GameBrain>
     // Start is called before the first frame update
     private void Start()
     {
-        print("This should get called first");
         playerData = new List<Player>();
         Player warrior = new Player("Warrior", 1, 10, 500, 1, 5, 3, 5);
         playerData.Add(warrior);

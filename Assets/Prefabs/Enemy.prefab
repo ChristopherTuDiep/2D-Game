@@ -473,10 +473,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54649ba2d93150a42bfbaa7f9fcb921e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudPrefab: {fileID: 8853063648973379162}
-  enemyHUD: {fileID: 1383023353057554899}
-  exp: 50
+  MaxHealth: 10
+  CurrentHealth: 10
+  MaxMana: 5
+  CurrentMana: 5
   currentGameObject: {fileID: 8605165880625305023}
+  enemyHUD: {fileID: 1383023353057554899}
+  accuracy: 0.9
+  exp: 50
 --- !u!1 &8853063648973379162
 GameObject:
   m_ObjectHideFlags: 0

@@ -1091,12 +1091,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47d1015896e548247a884097f4f8ca4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 10
+  CurrentHealth: 0
+  MaxMana: 0
+  CurrentMana: 0
   menuGO: {fileID: 8801142594343778798}
+  skillListGO: {fileID: 2504643644546969218}
   playerImage: {fileID: 5066008172929020419}
-  maxMana: 10
-  currentMana: 10
-  levelUpExp: 100
   currentExp: 0
+  levelUpExp: 100
 --- !u!1 &8801142594343778798
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,7 +1116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2027659261873061261
 RectTransform:
   m_ObjectHideFlags: 0
