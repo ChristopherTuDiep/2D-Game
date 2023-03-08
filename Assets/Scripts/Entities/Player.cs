@@ -8,7 +8,8 @@ public class Player : Entity
     public GameObject skillListGO;
     public GameObject playerImage;
 
-    public int currentExp;
+    private CharacterHUD characterHUD;
+
     public int levelUpExp;
 
     private Weapon currentWeapon;
@@ -17,85 +18,38 @@ public class Player : Entity
     public Player() : base()
     {
         IsPlayerEntity = true;
+
+        levelUpExp = 100;
+
         currentWeapon = new Weapon();
         currentArmor = new Armor();
     }
 
-    public Player(string entityName, int entityLevel, int healthScale, int damageScale, int magicScale, int defenseScale, int speedScale, int manaScale)
+    public Player(string entityName, int entityLevel, int maxHealthPoints, int maxSpellPoints, int phyAttack, int magAttack, int phyDefense, int magDefense, int accuracy, int speed, int critical, int evasion, List<Skill> skills, int exp, int levelUpExp)
+        : base(entityName, entityLevel, true, maxHealthPoints, maxSpellPoints, phyAttack, magAttack, phyDefense, magDefense, accuracy, speed, critical, evasion, skills, exp)
     {
-        EntityName = entityName;
-        EntityLevel = entityLevel;
-
         IsPlayerEntity = true;
-        IsCurrentTurn = false;
-        IsDead = false;
 
-        HealthScale = healthScale;
-        DamageScale = damageScale;
-        MagicScale = magicScale;
-        DefenseScale = defenseScale;
-        SpeedScale = speedScale;
-        ManaScale = manaScale;
-
-        currentExp = 0;
-        levelUpExp = 100;
-
-        Skills = new List<Skill>
-        {
-            new Skill(),
-            new Skill("Agi", 4, 80)
-        };
+        this.levelUpExp = levelUpExp;
 
         currentWeapon = new Weapon();
         currentArmor = new Armor();
-
-        UpdateStats();
-
-        FullRestore();
     }
 
-    public void SetPlayerStats(Player playerData)
+    public Player(EntityData data, int levelUpExp)
     {
-        EntityName = playerData.EntityName;
-        EntityLevel = playerData.EntityLevel;
+        IsPlayerEntity = true;
 
-        CurrentHealth = playerData.CurrentHealth;
-        CurrentMana = playerData.CurrentMana;
+        this.data = data;
+        this.levelUpExp = levelUpExp;
 
-        HealthScale = playerData.HealthScale;
-        DamageScale = playerData.DamageScale;
-        MagicScale = playerData.MagicScale;
-        DefenseScale = playerData.DefenseScale;
-        SpeedScale = playerData.SpeedScale;
-        ManaScale = playerData.ManaScale;
-
-        currentExp = playerData.currentExp;
-        levelUpExp = playerData.levelUpExp;
-
-        Skills = playerData.Skills;
-
-        UpdateStats();
+        currentWeapon = new Weapon();
+        currentArmor = new Armor();
     }
 
-    public void SetPlayerStats(string entityName, int entityLevel, int currentHealth, int currentMana, int healthScale, int damageScale, int magicScale, int defenseScale, int speedScale, int manaScale)
+    public EntityData GetPlayerData()
     {
-        EntityName = entityName;
-        EntityLevel = entityLevel;
-
-        CurrentHealth = currentHealth;
-        CurrentMana = currentMana;
-
-        HealthScale = healthScale;
-        DamageScale = damageScale;
-        MagicScale = magicScale;
-        DefenseScale = defenseScale;
-        SpeedScale = speedScale;
-        ManaScale= manaScale;
-
-        currentExp = 0;
-        levelUpExp = 100;
-
-        UpdateStats();
+        return data;
     }
 
     public Weapon EquipWeapon(Weapon newWeapon)
@@ -124,32 +78,12 @@ public class Player : Entity
         playerImage.SetActive(true);
     }
 
-    public override bool Hit()
-    {
-        float random = Random.value;
-        if (random < currentWeapon.weaponAccuracy)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public float PhysicalSkill()
-    {
-        return Mathf.Sqrt(currentWeapon.weaponPhysicalDamage) * Mathf.Sqrt(Strength);
-    }
-
-    public float MagicSkill()
-    {
-        return Mathf.Sqrt(currentWeapon.weaponMagicDamage) * Mathf.Sqrt(Strength);
-    }
-
     public bool GainExp(int exp)
     {
-        currentExp += exp;
-        if(currentExp >= levelUpExp)
+        data.Exp += exp;
+        if(data.Exp >= levelUpExp)
         {
-            currentExp -= levelUpExp;
+            data.Exp -= levelUpExp;
             return true;
         }
         return false;
@@ -157,16 +91,31 @@ public class Player : Entity
 
     public void LevelUp()
     {
-        EntityLevel++;
-        UpdateStats();
+        data.EntityLevel++;
     }
 
     public override void Died()
     {
-        IsDead = true;
+        data.CurrentHealthPoints = 0;
+        data.IsDead = true;
     }
 
-    public override void UpdateHUD() { }
+    public void SetHUD(CharacterHUD hud)
+    {
+        characterHUD = hud;
+    }
+
+    public override void UpdateHUD() 
+    {
+        characterHUD.SetName(data.EntityName);
+
+        characterHUD.SetMaxHealth(data.MaxHealthPoints);
+        characterHUD.SetHealth(data.CurrentHealthPoints);
+        characterHUD.SetMaxMana(data.MaxSpellPoints);
+        characterHUD.SetMana(data.CurrentSpellPoints);
+        characterHUD.SetMaxExp(levelUpExp);
+        characterHUD.SetExp(data.Exp);
+    }
 
     private void Update()
     {

@@ -32,7 +32,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2027659261873061261}
-  - {fileID: 4711332750450119708}
   m_Father: {fileID: 6410169547334661053}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -118,7 +117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4711332750450119708
 RectTransform:
   m_ObjectHideFlags: 0
@@ -131,13 +130,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1843032048660212239}
-  m_RootOrder: 1
+  m_Father: {fileID: 2027659261873061261}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.9999905, y: 2}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 15.49999, y: 2}
+  m_SizeDelta: {x: 20, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7294333925377608540
 MonoBehaviour:
@@ -1091,14 +1090,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47d1015896e548247a884097f4f8ca4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 10
-  CurrentHealth: 0
-  MaxMana: 0
-  CurrentMana: 0
   menuGO: {fileID: 8801142594343778798}
   skillListGO: {fileID: 2504643644546969218}
   playerImage: {fileID: 5066008172929020419}
-  currentExp: 0
   levelUpExp: 100
 --- !u!1 &8801142594343778798
 GameObject:
@@ -1132,6 +1126,7 @@ RectTransform:
   - {fileID: 1914815329835575982}
   - {fileID: 6557004523922466272}
   - {fileID: 7216932109329493278}
+  - {fileID: 4711332750450119708}
   m_Father: {fileID: 1843032048660212239}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1152,7 +1147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a12582c70f707a49ba055e4ac61e51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayer: {fileID: 0}
   attackButton: {fileID: 6897928077566477005}
   skillListButton: {fileID: 6792648289097562717}
   runButton: {fileID: 4325652038374739010}

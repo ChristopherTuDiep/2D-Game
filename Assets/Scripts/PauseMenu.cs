@@ -9,7 +9,7 @@ public class PauseMenu : MonoBehaviour
 
     public void StatsButton()
     {
-        statsDisplay.SetActive(!statsDisplay.active);
+        statsDisplay.SetActive(!statsDisplay.activeSelf);
     }
 
     private void OnDisable()

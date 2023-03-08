@@ -6,28 +6,34 @@ public class Weapon : Item
 {
     public string ItemName { get; set; }
     public int ItemCost { get; set; }
+    public int ItemAmount { get; set; }
+    public bool IsUsable { get; set; }
+    public bool IsEquipped { get; set; }
 
-    public int weaponPhysicalDamage;
-    public int weaponMagicDamage;
-    public float weaponAccuracy;
+    public int physicalAtk;
+    public int magicAtk;
 
     public Weapon()
     {
         ItemName = "Basic Weapon";
         ItemCost = 0;
+        ItemAmount = 1;
+        IsUsable = false;
+        IsEquipped = false;
 
-        weaponPhysicalDamage = 38;
-        weaponMagicDamage = 0;
-        weaponAccuracy = 0.9f;
+        physicalAtk = 0;
+        magicAtk = 0;
     }
 
-    public Weapon(string weaponName, int weaponCost, int weaponPhysicalDamage, int weaponMagicDamage, float weaponAccuracy)
+    public Weapon(string weaponName, int weaponCost, int itemAmount, int weaponPhysicalDamage, int weaponMagicDamage, float weaponAccuracy)
     {
         ItemName = weaponName;
         ItemCost = weaponCost;
+        ItemAmount = itemAmount;
+        IsUsable = false;
+        IsEquipped = false;
 
-        this.weaponPhysicalDamage = weaponPhysicalDamage;
-        this.weaponMagicDamage = weaponMagicDamage;
-        this.weaponAccuracy = weaponAccuracy;
+        physicalAtk = weaponPhysicalDamage;
+        magicAtk = weaponMagicDamage;
     }
 }

@@ -30,12 +30,14 @@ public class BattleSystem : MonoBehaviour
 
     private Player[] characterOrder; //Order of characters from top to bottom
     private Enemy[] enemyOrder; //Order of enemies from top to bottom
-    private CharacterHUD[] characterHUDs; //HUDs for the player characters
 
     //Keeps track of turns and initiative
     public BattleState state;
     private List<Entity> turnOrder;
     private int turnIncrement;
+
+    //Menu if you win
+    [SerializeField] GameObject victoryScreen;
 
     //Static spacing for the battle screen
     private readonly float entityY = 3.6f;
@@ -56,6 +58,7 @@ public class BattleSystem : MonoBehaviour
 
     void Start()
     {
+        victoryScreen.SetActive(false);
         state = BattleState.START;
         turnIncrement = 0;
         turnOrder = new List<Entity>();
@@ -74,7 +77,6 @@ public class BattleSystem : MonoBehaviour
         //Instantiates characters, their huds, and the order
         int numberOfCharacters = GameBrain.Instance.PlayerCount();
         characterOrder = new Player[numberOfCharacters];
-        characterHUDs= new CharacterHUD[numberOfCharacters];
 
         for (int i = 0; i < numberOfCharacters; i++)
         {
@@ -100,16 +102,10 @@ public class BattleSystem : MonoBehaviour
 
             CharacterHUD characterHUD = characterHUDGO.GetComponent<CharacterHUD>();
 
-            characterHUD.SetName(playerEntity.EntityName);
+            playerEntity.SetHUD(characterHUD);
 
-            characterHUD.SetMaxHealth(playerEntity.MaxHealth);
-            characterHUD.SetHealth(playerEntity.CurrentHealth);
-            characterHUD.SetMaxMana(playerEntity.MaxMana);
-            characterHUD.SetMana(playerEntity.CurrentMana);
-            characterHUD.SetMaxExp(playerEntity.levelUpExp);
-            characterHUD.SetExp(playerEntity.currentExp);
+            playerEntity.UpdateHUD();
 
-            characterHUDs[i] = characterHUD;
             entities.Add(playerEntity);
         }
 
@@ -145,7 +141,7 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         //Order turn order by each entities' speed
-        turnOrder = entities.OrderBy(f => f.GetAgility()).ToList<Entity>();
+        turnOrder = entities.OrderBy(f => f.Speed()).ToList<Entity>();
         turnOrder.Reverse();
 
         TurnOrder();
@@ -161,7 +157,7 @@ public class BattleSystem : MonoBehaviour
         }
 
         //Skip any entities that might be dead
-        while (turnOrder[turnIncrement].IsDead)
+        while (turnOrder[turnIncrement].IsDead())
         {
             turnIncrement++;
             if (turnIncrement >= turnOrder.Count)
@@ -200,7 +196,7 @@ public class BattleSystem : MonoBehaviour
         //Keeps track of current enemy player wishes to attack
         int currentTarget = 0;
 
-        while (enemyOrder[currentTarget].IsDead)
+        while (enemyOrder[currentTarget].IsDead())
         {
             currentTarget++;
             if(currentTarget > enemyOrder.Length - 1)
@@ -227,7 +223,7 @@ public class BattleSystem : MonoBehaviour
                     {
                         currentTarget = enemyOrder.Length - 1;
                     }
-                } while (enemyOrder[currentTarget].IsDead);
+                } while (enemyOrder[currentTarget].IsDead());
 
                 MoveArrow(currentTarget);
             }
@@ -241,7 +237,7 @@ public class BattleSystem : MonoBehaviour
                     {
                         currentTarget = 0;
                     }
-                } while (enemyOrder[currentTarget].IsDead);
+                } while (enemyOrder[currentTarget].IsDead());
 
                 MoveArrow(currentTarget);
             }
@@ -261,7 +257,7 @@ public class BattleSystem : MonoBehaviour
 
         dialogue.text = BattleHandler.GetDialogue();
 
-        UpdateManaBars();
+        character.UpdateHUD();
 
         enemySelectionArrow.SetActive(false);
 
@@ -290,7 +286,7 @@ public class BattleSystem : MonoBehaviour
         var random = new System.Random();
         int randomPlayer = random.Next(0, characterOrder.Length - 1);
 
-        while (characterOrder[randomPlayer].IsDead)
+        while (characterOrder[randomPlayer].IsDead())
         {
             randomPlayer++;
             if (randomPlayer >= characterOrder.Length)
@@ -303,23 +299,23 @@ public class BattleSystem : MonoBehaviour
         BattleHandler.SetState(enemy, victim);
         bool isDead = false;
 
-        dialogue.text = enemy.EntityName + " attacks!";
+        dialogue.text = "Enemy attacks!";
 
         yield return new WaitForSeconds(1f);
 
         if(BattleHandler.Hit())
         {
-            BattleHandler.Attack();
+            BattleHandler.WeaponAttack();
 
             isDead = BattleHandler.IsTargetDead();
 
-            characterHUDs[randomPlayer].SetHealth(victim.CurrentHealth);
+            characterOrder[randomPlayer].UpdateHUD();
 
-            dialogue.text = enemy.EntityName + " hits!";
+            dialogue.text = "Enemy hits!";
         }
         else
         {
-            dialogue.text = enemy.EntityName + " misses!";
+            dialogue.text = "Enemy misses!";
         }
 
         yield return new WaitForSeconds(1f);
@@ -337,35 +333,12 @@ public class BattleSystem : MonoBehaviour
         TurnOrder();
     }
 
-    //Helper method to update the mana bars
-    private void UpdateManaBars()
-    {
-        for (int i = 0; i < characterOrder.Length; i++)
-        {
-            characterHUDs[i].SetMana(characterOrder[i].CurrentMana);
-        }
-    }
-
     //Method that controls conditions for if the battle ends
     void EndBattle()
     {
         if(state == BattleState.WON)
         {
-            dialogue.text = "You won the battle!";
-
-            int totalExp = 0;
-            bool levelUp = false;
-
-            for(int i = 0; i < enemyOrder.Length; i++)
-            {
-                totalExp += enemyOrder[i].ExpWorth();
-            }
-
-            for(int i = 0; i < characterOrder.Length; i++)
-            {
-                levelUp = characterOrder[i].GainExp(Mathf.RoundToInt(totalExp / GameBrain.Instance.PlayerCount())); ;
-                characterHUDs[i].SetExp(characterOrder[i].currentExp);
-            }
+            StartCoroutine(Victory());
         }
         else if(state == BattleState.LOST)
         {
@@ -376,9 +349,33 @@ public class BattleSystem : MonoBehaviour
             dialogue.text = "You have escaped!";
         }
 
+        GameBrain.Instance.locationsToAdd.Clear();
+
         GameBrain.Instance.UpdateStats(characterOrder);
 
-        SceneManager.LoadScene("Battle_Scene");
+        SceneManager.LoadScene("World_Scene");
+    }
+
+    IEnumerator Victory()
+    {
+        victoryScreen.SetActive(true);
+        dialogue.text = "You won the battle!";
+
+        int totalExp = 0;
+
+        for (int i = 0; i < enemyOrder.Length; i++)
+        {
+            totalExp += enemyOrder[i].ExpWorth();
+        }
+
+        for (int i = 0; i < characterOrder.Length; i++)
+        {
+            characterOrder[i].GainExp(Mathf.RoundToInt(totalExp / GameBrain.Instance.PlayerCount())); ;
+            characterOrder[i].UpdateHUD();
+        }
+        GameBrain.Instance.AddLocations();
+
+        yield return new WaitForSeconds(3f);
     }
 
     //Method that checks if all the entities on one side are dead
@@ -386,7 +383,7 @@ public class BattleSystem : MonoBehaviour
     {
         for(int i = 0; i < entities.Length; i++)
         {
-            if (!entities[i].IsDead)
+            if (!entities[i].IsDead())
             {
                 return false;
             }

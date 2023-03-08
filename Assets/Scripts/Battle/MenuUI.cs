@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class MenuUI : MonoBehaviour
 {
-    public Player currentPlayer;
-
     public Button attackButton;
     public Button skillListButton;
     public Button runButton;
@@ -20,7 +18,7 @@ public class MenuUI : MonoBehaviour
 
         if (BattleHandler.Hit())
         {
-            BattleHandler.Attack();
+            BattleHandler.WeaponAttack();
 
             BattleHandler.SetDialogue("You hit!");
         }
@@ -34,7 +32,7 @@ public class MenuUI : MonoBehaviour
     //The code controlling the skill button
     public void SkillListButton()
     {
-        skillList.SetActive(true);
+        skillList.SetActive(!skillList.activeSelf);
     }
 
     //the code controlling the run button

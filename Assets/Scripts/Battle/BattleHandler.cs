@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public static class BattleHandler
@@ -20,34 +21,56 @@ public static class BattleHandler
     }
 
     //basic attack effect
-    public static void Attack()
+
+    public static int WeaponAttack()
     {
-        float basePower = attacker.WeaponDamage();
-        float damageCalculator = basePower / Mathf.Sqrt(target.GetEndurance() * 8);
-        target.TakeDamage(Mathf.RoundToInt(damageCalculator));
+        float basePower = attacker.PhyAttack();
+        float defense = target.PhyDefense();
+        float damageCalculator = basePower - defense;
+        int damage = Mathf.RoundToInt(damageCalculator);
+        if (damage <= 0)
+        {
+            damage = 1;
+        }
+
+        target.TakeDamage(damage);
+
+        DamagePopup.Create(target.transform.position, target.IsPlayerEntity, damage, false, false);
+        return damage;
+    }
+    public static void ActivateSkill(string skill)
+    {
+        attacker.UseSkill(skill);
     }
 
     //basic skill effect
-    public static void SkillAttack(string skill)
+    public static void SkillAttack(int skillDamage, bool isPhysical)
     {
-        Skill attack = attacker.UseSkill(skill);
-        if(attack != null)
-        {
-            float basePower = Mathf.Sqrt(attack.skillDamage) * Mathf.Sqrt(attacker.GetMagic());
-            float damageCalculator = basePower / Mathf.Sqrt(target.GetEndurance() * 8);
+        float baseDamage = attacker.SkillAttack(isPhysical);
+        float defense = target.SkillDefense(isPhysical);
 
-            target.TakeDamage(Mathf.RoundToInt(damageCalculator));
+        float damageCalculator = (baseDamage - defense) * (skillDamage / 100);
+
+        int damage = Mathf.RoundToInt(damageCalculator);
+
+        if (damage <= 0)
+        {
+            damage = 1;
         }
+
+        DamagePopup.Create(target.transform.position, target.IsPlayerEntity, damage, false, false);
+
+        target.TakeDamage(damage);
     }
 
-    public static void Heal(int health)
+    public static void SkillHeal(int healingPower)
+    {
+        float healCalculator = attacker.MagDefense() * (healingPower / 100);
+        target.RestoreHealth(Mathf.RoundToInt(healCalculator));
+    }
+    public static void ItemHeal(int health)
     {
         target.RestoreHealth(health);
-    }
-
-    public static void RestoreMana(int restore)
-    {
-
     }
 
     public static void TryToEscape(float random)
@@ -78,7 +101,7 @@ public static class BattleHandler
 
     public static bool IsTargetDead()
     {
-        return target.IsDead;
+        return target.IsDead();
     }
 
     public static void SetDialogue(string dialogue)
@@ -93,7 +116,8 @@ public static class BattleHandler
 
     public static bool Hit()
     {
-        return attacker.Hit();
+        double accuracy = (double)(attacker.Accuracy() - target.Evasion() / 100);
+        return true;
     }
 
     public static bool IsButtonPressed()

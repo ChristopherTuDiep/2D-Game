@@ -13,6 +13,6 @@ public class SkillButtonScript : MonoBehaviour
     {
         BattleHandler.ButtonPressed();
 
-        BattleHandler.SkillAttack(skillButton.GetComponentInChildren<TMP_Text>().text);
+        BattleHandler.ActivateSkill(skillButton.GetComponentInChildren<TMP_Text>().text);
     }
 }

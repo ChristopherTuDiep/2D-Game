@@ -11,11 +11,17 @@ public class HealthPotion : IConsumable
 {
     public string ItemName { get; set; }
     public int ItemCost { get; set; }
+    public int ItemAmount { get; set; }
+    public bool IsUsable { get; set; }
 
     public int healAmount;
 
     public HealthPotion() 
     {
+        ItemName = "Health Potion";
+        ItemCost = 10;
+        ItemAmount = 1;
+        IsUsable = false;
         healAmount = 10;
     }
 
@@ -26,7 +32,7 @@ public class HealthPotion : IConsumable
 
     public void ItemEffect()
     {
-        BattleHandler.Heal(healAmount);
+        BattleHandler.ItemHeal(healAmount);
     }
 }
 
@@ -34,11 +40,18 @@ public class ManaPotion : IConsumable
 {
     public string ItemName { get; set; }
     public int ItemCost { get; set; }
+    public int ItemAmount { get; set; }
+    public bool IsUsable { get; set; }
 
     public int restoreAmount;
 
     public ManaPotion()
     {
+        ItemName = "Mana Potion";
+        ItemCost = 10;
+        ItemAmount = 1;
+        IsUsable = false;
+
         restoreAmount = 10;
     }
 
@@ -49,6 +62,6 @@ public class ManaPotion : IConsumable
 
     public void ItemEffect()
     {
-        BattleHandler.Heal(restoreAmount);
+        BattleHandler.ItemHeal(restoreAmount);
     }
 }

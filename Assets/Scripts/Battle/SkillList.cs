@@ -31,12 +31,18 @@ public class SkillList : MonoBehaviour
             GameObject skillButton = Instantiate(skillButtonPrefab, buttonPos, Quaternion.identity);
             skillButton.transform.SetParent(skillList.transform, false);
             skillButton.GetComponent<SkillButtonScript>().skillName.text = currentPlayer.GetSkills()[i].skillName;
-            skillButton.GetComponent<SkillButtonScript>().skillCost.text = currentPlayer.GetSkills()[i].skillCost.ToString() + " MP";
+            if (!currentPlayer.GetSkills()[i].isPhysical)
+            {
+                skillButton.GetComponent<SkillButtonScript>().skillCost.text = currentPlayer.GetSkills()[i].skillCost.ToString() + " MP";
+            }
+            else
+            {
+                skillButton.GetComponent<SkillButtonScript>().skillCost.text = 
+                    Mathf.RoundToInt(((float)currentPlayer.GetSkills()[i].skillCost / 100.0f) * currentPlayer.MaxHealth()).ToString() + " HP";
+            }
 
             buttonList.Add(skillButton.GetComponent<Button>());
         }
-
-        skillList.SetActive(false);
     }
 
     //checks if any buttons need to be set to uninteractable

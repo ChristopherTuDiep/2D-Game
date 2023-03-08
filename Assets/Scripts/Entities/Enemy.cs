@@ -7,63 +7,32 @@ public class Enemy : Entity
     public GameObject currentGameObject;
     public EnemyHUD enemyHUD;
 
-    public float accuracy;
-    public int exp;
 
     public Enemy() : base() 
     {
         IsPlayerEntity = false;
-
-        accuracy = 0.8f;
-        exp = 50;
     }
 
-    public Enemy(string entityName, int entityLevel, int healthScale, int damageScale, int magicScale, int defenseScale, int speedScale, float accuracy)
+    public Enemy(string entityName, int entityLevel, int maxHealthPoints, int maxSpellPoints, int phyAttack, int magAttack, int phyDefense, int magDefense, int accuracy, int speed, int critical, int evasion, List<Skill> skills, int exp)
+        : base(entityName, entityLevel, true, maxHealthPoints, maxSpellPoints, phyAttack, magAttack, phyDefense, magDefense, accuracy, speed, critical, evasion, skills, exp)
     {
-        EntityName = entityName;
-        EntityLevel = entityLevel;
-
         IsPlayerEntity = false;
-        IsCurrentTurn = false;
-        IsDead = false;
-
-        HealthScale = healthScale;
-        DamageScale = damageScale;
-        MagicScale = magicScale;
-        DefenseScale = defenseScale;
-        SpeedScale = speedScale;
-
-        Skills = new List<Skill>
-        {
-            new Skill()
-        };
-
-        UpdateStats();
-    }
-
-    public override bool Hit()
-    {
-        float random = Random.value;
-        if(random < accuracy)
-        {
-            return true;
-        }
-        return false;
     }
 
     public int ExpWorth()
     {
-        return exp;
+        return data.Exp;
     }
 
     public override void Died()
     {
-        IsDead = true;
+        data.CurrentHealthPoints = 0;
+        data.IsDead = true;
         currentGameObject.SetActive(false);
     }
 
     public override void UpdateHUD()
     {
-        enemyHUD.SetHealth(CurrentHealth);
+        enemyHUD.SetHealth(data.CurrentHealthPoints);
     }
 }
