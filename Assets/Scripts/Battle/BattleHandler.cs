@@ -24,7 +24,7 @@ public static class BattleHandler
 
     public static int WeaponAttack()
     {
-        float basePower = attacker.PhyAttack();
+        float basePower = attacker.BasicAttack();
         float defense = target.PhyDefense();
         float damageCalculator = basePower - defense;
         int damage = Mathf.RoundToInt(damageCalculator);

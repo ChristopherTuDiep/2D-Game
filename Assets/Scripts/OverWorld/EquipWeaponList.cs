@@ -20,7 +20,8 @@ public class EquipWeaponList : MonoBehaviour
 
             GameObject skillButton = Instantiate(itemButtonPrefab);
             skillButton.transform.SetParent(itemGrid.transform, false);
-            skillButton.GetComponent<EquipListScript>().itemName.text = GameBrain.Instance.weapons[i].ItemName;
+            skillButton.GetComponent<EquipItemScript>().itemName.text = GameBrain.Instance.weapons[i].ItemName;
+            skillButton.SetActive(true);
             buttonList.Add(skillButton.GetComponent<Button>());
         }
     }
@@ -29,7 +30,7 @@ public class EquipWeaponList : MonoBehaviour
     {
         for(int i = 0; i < buttonList.Count; i++)
         {
-            buttonList[i].interactable = !GameBrain.Instance.weapons[i].IsEquipped;
+            buttonList[i].interactable = (GameBrain.Instance.weapons[i].ItemAmount > GameBrain.Instance.weapons[i].InUse);
         }
     }
 }

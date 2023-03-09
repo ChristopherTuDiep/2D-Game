@@ -8,7 +8,7 @@ public class Weapon : Item
     public int ItemCost { get; set; }
     public int ItemAmount { get; set; }
     public bool IsUsable { get; set; }
-    public bool IsEquipped { get; set; }
+    public int InUse { get; set; }
 
     public int physicalAtk;
     public int magicAtk;
@@ -19,7 +19,7 @@ public class Weapon : Item
         ItemCost = 0;
         ItemAmount = 1;
         IsUsable = false;
-        IsEquipped = false;
+        InUse = 0;
 
         physicalAtk = 0;
         magicAtk = 0;
@@ -31,7 +31,7 @@ public class Weapon : Item
         ItemCost = weaponCost;
         ItemAmount = itemAmount;
         IsUsable = false;
-        IsEquipped = false;
+        InUse = 0;
 
         physicalAtk = weaponPhysicalDamage;
         magicAtk = weaponMagicDamage;

@@ -15,6 +15,8 @@ public abstract class Entity : MonoBehaviour
 {
     public bool IsPlayerEntity { get; set; }
 
+    [SerializeField] EntityAnimatorController animationController;
+
     protected EntityData data;
 
     /*
@@ -34,6 +36,8 @@ public abstract class Entity : MonoBehaviour
     private readonly float _BUFF_MULTIPLIER = 1.5f;
     private readonly float _DEBUFF_MULTIPLIER = 0.66f;
     public bool IsCurrentTurn { get; set; }
+
+    [SerializeField] private AudioSource weaponEffect;
 
     public Entity()
     {
@@ -109,7 +113,6 @@ public abstract class Entity : MonoBehaviour
     {
         return data.CurrentHealthPoints;
     }
-
     public void SetMultiplier(Multiplier multiplier, int location)
     {
         switch (multiplier)
@@ -127,7 +130,6 @@ public abstract class Entity : MonoBehaviour
                 break;
         }
     }
-
     //Getting entity attributes
     public float PhyAttack()
     {
@@ -204,16 +206,24 @@ public abstract class Entity : MonoBehaviour
         return false;
     }
 
+    public float BasicAttack()
+    {
+        animationController.BasicWeaponAttack();
+        weaponEffect.Play();
+        return PhyAttack();
+    }
     //Gets data needed for the battle instance
     public float SkillAttack(bool isPhysical)
     {
         if(isPhysical)
         {
-            return data.PhyAttack;
+            animationController.PhysicalSkillAttack();
+            weaponEffect.Play();
+            return PhyAttack();
         }
         else
         {
-            return data.MagAttack;
+            return MagAttack();
         }
     }
 
@@ -221,11 +231,11 @@ public abstract class Entity : MonoBehaviour
     {
         if(isPhysical)
         {
-            return data.PhyDefense;
+            return PhyDefense();
         }
         else
         {
-            return data.MagDefense;
+            return MagDefense();
         }
     }
 

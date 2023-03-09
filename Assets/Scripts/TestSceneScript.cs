@@ -14,6 +14,7 @@ public class TestSceneScript : MonoBehaviour
         GameBrain.Instance.EmptyRun();
         isPaused = false;
     }
+
     // Update is called once per frame
     void Update()
     {

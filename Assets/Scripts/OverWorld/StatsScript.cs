@@ -9,6 +9,7 @@ public class StatsScript : MonoBehaviour
     [SerializeField] AttributesScript attributesScript;
 
     [SerializeField] GameObject weaponList;
+    [SerializeField] GameObject armorList;
 
     private EntityData currentEntity;
 
@@ -18,15 +19,36 @@ public class StatsScript : MonoBehaviour
         generalCharacterInfo.UpdateStats(currentEntity);
         attributesScript.UpdateAttributes(currentEntity);
         weaponList.SetActive(false);
+        armorList.SetActive(false);
     }
 
     public void WeaponButton()
     {
         weaponList.SetActive(!weaponList.activeSelf);
+        armorList.SetActive(false);
+    }
+
+    public void ArmorButton()
+    {
+        weaponList.SetActive(false);
+        armorList.SetActive(!armorList.activeSelf);
+    }
+
+    public void SetEntity(EntityData newEntity)
+    {
+        currentEntity = newEntity;
+        weaponList.SetActive(false);
+        armorList.SetActive(false);
     }
 
     public EntityData CurrentPlayer()
     {
         return currentEntity;
+    }
+
+    private void Update()
+    {
+        generalCharacterInfo.UpdateStats(currentEntity);
+        attributesScript.UpdateAttributes(currentEntity);
     }
 }

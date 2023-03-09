@@ -5,12 +5,17 @@ using UnityEngine;
 public class ShopScript : MonoBehaviour
 {
     [SerializeField] RestMenuUI restMenu;
-    [SerializeField] GameObject weaponList;
+    [SerializeField] PlayerWeaponScript playerWeaponList;
+    [SerializeField] PlayerArmorScript playerArmorList;
 
     public List<Weapon> listOfWeapons;
+    public List<Armor> listOfArmors;
 
-    private Weapon itemToBuy;
-    private Weapon itemToSell;
+    private Weapon weaponToBuy;
+    private Weapon weaponToSell;
+
+    private Armor armorToBuy;
+    private Armor armorToSell;
 
     private void Awake()
     {
@@ -19,17 +24,12 @@ public class ShopScript : MonoBehaviour
             new Weapon(),
             new Weapon("Moonblade", 50, 1, 50, 50, 10)
         };
-        weaponList.SetActive(true);
-    }
 
-    public void WeaponButton()
-    {
-        weaponList.SetActive(true);
-    }
-
-    public void ArmorButton()
-    {
-        weaponList.SetActive(false);
+        listOfArmors = new()
+        {
+            new Armor(),
+            new Armor("Iron Armor", 20, 1, 10, 10)
+        };
     }
 
     public void WantToBuy(string name)
@@ -37,8 +37,17 @@ public class ShopScript : MonoBehaviour
         var index = listOfWeapons.FindIndex(f => f.ItemName == name);
         if (index != -1)
         {
-            itemToBuy = listOfWeapons[index];
-            restMenu.BuyItem(itemToBuy);
+            weaponToBuy = listOfWeapons[index];
+            restMenu.BuyItem(weaponToBuy);
+            return;
+        }
+
+        index = listOfArmors.FindIndex(f => f.ItemName == name);
+        if (index != -1)
+        {
+            armorToBuy = listOfArmors[index];
+            restMenu.BuyItem(armorToBuy);
+            return;
         }
         else
         {
@@ -51,27 +60,53 @@ public class ShopScript : MonoBehaviour
         var index = GameBrain.Instance.weapons.FindIndex(f => f.ItemName == name);
         if (index != -1)
         {
-            itemToSell = GameBrain.Instance.weapons[index];
-            restMenu.SellItem(itemToSell);
+            weaponToSell = GameBrain.Instance.weapons[index];
+            restMenu.SellItem(weaponToBuy);
+            return;
         }
-        else
+
+        index = GameBrain.Instance.armors.FindIndex(f => f.ItemName == name);
+        if (index != -1)
         {
-            Debug.Log("Cannot find Item");
+            armorToSell = GameBrain.Instance.armors[index];
+            restMenu.SellItem(armorToSell);
+            return;
         }
     }
 
     public void Buy()
     {
-        GameBrain.Instance.AddWeapon(itemToBuy);
+        if(weaponToBuy != null)
+        {
+            GameBrain.Instance.AddWeapon(weaponToBuy);
+            playerWeaponList.UpdateInventory();
+        }
+        else if (armorToBuy != null)
+        {
+            GameBrain.Instance.AddArmor(armorToBuy);
+            playerArmorList.UpdateInventory();
+        }
     }
 
     public void Sell()
     {
-        GameBrain.Instance.SellWeapon(itemToSell);
+        if(weaponToSell != null)
+        {
+            GameBrain.Instance.SellWeapon(weaponToSell);
+            playerWeaponList.UpdateInventory();
+        }
+        else if (armorToSell != null)
+        {
+            GameBrain.Instance.SellArmor(armorToSell);
+            playerArmorList.UpdateInventory();
+        }
     }
 
     public void Cancelled()
     {
-        itemToBuy = null;
+        weaponToBuy = null;
+        weaponToSell = null;
+        armorToBuy = null;
+        armorToSell = null;
     }
 }

@@ -2,15 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using System.Linq;
-using System;
-using Newtonsoft.Json.Linq;
-using System.Security.Cryptography;
-using System.IO;
-using UnityEngine.Events;
+
 using UnityEngine.SceneManagement;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, ESCAPED, WON, LOST }
 
@@ -40,12 +34,13 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] GameObject victoryScreen;
 
     //Static spacing for the battle screen
-    private readonly float entityY = 3.6f;
+    private readonly float entityY = 2.75f;
     private readonly float entityYSpacing = 2f;
 
     private readonly float enemyEntityX = -2f;
     private readonly float entityXSpacing = 2f;
 
+    private readonly float playerEntityY = 3.6f;
     private readonly float playerEntityX = 2.75f;
     private readonly float playerXSpacing = 1f;
     private readonly float playerTurnPosition = 2f;

@@ -198,14 +198,14 @@ public class EntityData
 
     public void EquipWeapon(Weapon newWeapon)
     {
-        newWeapon.IsEquipped = true;
-        currentWeapon.IsEquipped = false;
+        newWeapon.InUse++;
+        currentWeapon.InUse--;
         currentWeapon = newWeapon;
     }
     public void EquipArmor(Armor newArmor)
     {
-        newArmor.IsEquipped = true;
-        currentArmor.IsEquipped = false;
+        newArmor.InUse++;
+        currentArmor.InUse--;
         currentArmor = newArmor;
     }
 }
